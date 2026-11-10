@@ -1,0 +1,4 @@
+python-telegram-bot>=22.7,<23
+aiohttp>=3.9,<4
+asyncpg>=0.29,<1
+Telethon>=1.41,<2
