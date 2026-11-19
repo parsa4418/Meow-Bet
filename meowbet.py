@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-MEOWBET v7 (glass UI)  -  Render Web Service + Supabase (PostgreSQL)
+GUGUBET v7 (glass UI)  -  Render Web Service + Supabase (PostgreSQL)
 
 Environment variables (Render -> Environment):
   BOT_TOKEN        required  Telegram bot token
@@ -172,7 +172,7 @@ LEGACY_BANK_DEFAULTS = {
     "bank_sender_re": ["(?:از|فرستنده|مبدا|مبدأ)[^\\d]{0,40}(\\d{12})"],
 }
 
-GAME_LABELS = {"dice": "🎲 تاس", "dart": "🎯 دارت", "basket": "🏀 بسکتبال", "bowling": "🎳 بولینگ", "poop": "💩 پوپ", "dynamite": "🧨 دینامیت", "xo": "⭕ دوز", "quiz": "🧠 چالش", "football": "⚽ فوتبال"}
+GAME_LABELS = {"dice": "🎲 تاس", "dart": "🎯 دارت", "basket": "🏀 بسکتبال", "bowling": "🎳 بولینگ", "poop": "💩 پوپ", "dynamite": "🧨 دینامیت", "xo": "⭕ دوز", "coin": "🪙 شیر یا خط", "quiz": "🧠 چالش", "football": "⚽ فوتبال"}
 RESULT_LABELS = {"win": "برد", "loss": "باخت", "draw": "مساوی", "cashout": "کش‌اوت", "timeout": "تایم‌اوت", "refund": "بازگشت"}
 
 
@@ -580,7 +580,7 @@ async def log_game(conn, uid: int, game: str, amount: int, result: str, payout: 
 
 def help_text() -> str:
     return (
-        "╭━━━「 🎰 MEOWBET | میوبت 」━━━╮\n"
+        "╭━━━「 🎰 GUGUBET | گوگوبت 」━━━╮\n"
         "│ 🐾 راهنمای کامل ربات\n"
         "╰━━━━━━━━━━━━━━━━━━━━╯\n\n"
         "💰 «حساب و کیف پول»\n"
@@ -595,11 +595,12 @@ def help_text() -> str:
         "• 🎯 #سفید مبلغ — دارت سفید\n"
         "• 🎯 #قرمز مبلغ — دارت قرمز\n"
         "• ⚽ #فوتبال — بازی فوتبال؛ سپس شوت‌های ⚽ را بفرست\n"
-        "• 🧨 «میو بت دینامیت» — بازی ۲ نفره؛ مبلغ رو بفرست، نفر دوم با «پیوستن» میاد\n"
+        "• 🧨 «گوگو بت دینامیت» — بازی ۲ نفره؛ مبلغ رو بفرست، نفر دوم با «پیوستن» میاد\n"
         "• 🧨 دینامیت تک‌نفره (پنل ← تک نفره) — هر الماس ۰٫۲۵ برابر شرط، هر وقت خواستی «برداشت»\n"
-        "• ⭕ «میو بت دوز» — دوز ۲ نفره (X/O) با شرط؛ برنده کل شرط رو می‌بره، مساوی = برگشت شرط\n\n"
+        "• ⭕ «گوگو بت دوز» — دوز ۲ نفره (X/O) با شرط؛ برنده کل شرط رو می‌بره، مساوی = برگشت شرط\n"
+        "• 🪙 «گوگو بت شیر یا خط» — تک نفره یا دو نفره؛ شیر یا خط رو انتخاب کن، سکه تصمیم می‌گیره\n\n"
         "🧩 «پنل شیشه‌ای»\n"
-        "• توی گروه بنویس «میو بت پنل بازی ها» ← پنل بازی‌ها\n"
+        "• توی گروه بنویس «گوگو بت پنل بازی ها» ← پنل بازی‌ها\n"
         "• توی گروه یا پیوی بنویس «بانک» ← موجودی، واریز و برداشت\n\n"
         "🎯 دارت: بعد از ثبت بازی، دقیقاً یک دارت 🎯 در همان گروه ارسال کن.\n"
         "⚽ فوتبال: با #فوتبال شروع کن و سپس توپ ⚽ بفرست.\n"
@@ -669,7 +670,7 @@ async def require_join(update: Update, context: ContextTypes.DEFAULT_TYPE) -> bo
             label = f"📢 عضویت {i}: {chat['title'] or chat['username'] or chat['chat_id']}"
             buttons.append([InlineKeyboardButton(label[:60], url=url)])
     buttons.append([InlineKeyboardButton("✅ بررسی عضویت همه", callback_data="check_join")])
-    text = ("🔒 برای استفاده از میوبت باید در همه کانال‌ها/گروه‌های اجباری عضو باشی.\n"
+    text = ("🔒 برای استفاده از گوگوبت باید در همه کانال‌ها/گروه‌های اجباری عضو باشی.\n"
             "بعد از عضویت، «بررسی عضویت همه» را بزن.")
     markup = InlineKeyboardMarkup(buttons)
     if update.callback_query:
@@ -691,7 +692,7 @@ async def check_join(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await ensure_user(q.from_user)
         await try_referral(q.from_user.id)
         await q.edit_message_text(
-            "╭━━━「 🎰 MEOWBET | میوبت 」━━━╮\n"
+            "╭━━━「 🎰 GUGUBET | گوگوبت 」━━━╮\n"
             "│ 🐾 عضویت تأیید شد! خوش اومدی\n"
             "╰━━━━━━━━━━━━━━━━━━━━╯\n\n"
             "🎮 بازی‌ها داخل گروه انجام می‌شن.\n\n"
@@ -764,7 +765,7 @@ async def show_help(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def games_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "🎮 بازی‌های MEOWBET\n\n🎲 #زوج 20کی | #فرد 20کی\n💩 #پوپ 20کی\n🎯 #سفید 20کی | #قرمز 20کی\n⚽ #فوتبال\n\n"
+        "🎮 بازی‌های GUGUBET\n\n🎲 #زوج 20کی | #فرد 20کی\n💩 #پوپ 20کی\n🎯 #سفید 20کی | #قرمز 20کی\n⚽ #فوتبال\n\n"
         "🎯 برای دارت، بعد از ثبت بازی دقیقاً یک دارت 🎯 در همان گروه بفرست.\n"
         "⚽ برای فوتبال، بعد از #فوتبال شوت ⚽ بفرست.\n"
         "📌 بازی فوتبال بدون مبلغ‌گذاری و شرط انجام می‌شود.")
@@ -774,7 +775,7 @@ async def add_group_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     me = await context.bot.get_me()
     url = f"https://t.me/{me.username}?startgroup=true"
     await update.message.reply_text(
-        "➕ برای افزودن MEOWBET به گروه روی دکمه زیر بزن:",
+        "➕ برای افزودن GUGUBET به گروه روی دکمه زیر بزن:",
         reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("➕ افزودن ربات به گروه", url=url)]]))
 
 
@@ -1887,7 +1888,7 @@ async def send_group_quizzes(bot) -> None:
         qid, prize, now = os.urandom(6).hex(), s_int("quiz_prize", 50000), utc_ts()
         try:
             await bot.send_message(
-                cid, f"🧠 <b>چالش رندوم میوبت</b>\n\n❓ {esc(q)}\n\n💰 جایزه نفر اول: {format_mio(prize)} میو\n"
+                cid, f"🧠 <b>چالش رندوم گوگوبت</b>\n\n❓ {esc(q)}\n\n💰 جایزه نفر اول: {format_mio(prize)} میو\n"
                      f"⏱️ مهلت: {s_int('quiz_timeout_seconds', 120)} ثانیه\n✍️ جواب را همین‌جا بفرست.", parse_mode="HTML")
         except Forbidden:
             await pool.execute("UPDATE group_chats SET enabled=FALSE WHERE chat_id=$1", cid)
@@ -2023,6 +2024,7 @@ async def janitor_loop(bot) -> None:
             ("dynamite", lambda: expire_dynamite(bot)),
             ("xo", lambda: expire_xo(bot)),
             ("dsolo", lambda: expire_dsolo(bot)),
+            ("coin", lambda: expire_coin(bot)),
             ("arcade", lambda: expire_arcade_requests(bot)),
         ]
         if tick % 3 == 0:  # legacy tables: rarely hold anything now
@@ -2091,7 +2093,7 @@ async def admin_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("🔐 پنل مدیریت فقط در پیوی ادمین باز می‌شود.")
         return
     context.user_data.clear()
-    await update.message.reply_text("🛠 <b>پنل مدیریت میوبت</b>", parse_mode="HTML", reply_markup=admin_menu())
+    await update.message.reply_text("🛠 <b>پنل مدیریت گوگوبت</b>", parse_mode="HTML", reply_markup=admin_menu())
 
 
 async def pay_leaderboard():
@@ -3453,17 +3455,17 @@ async def build_view(kind: str, u, private: bool, back: Optional[str] = None):
 
     if kind == "home":
         bal = await get_balance(uid)
-        text = (f"{pe('🎰')} <b>MEOWBET | میوبت</b>\n\n"
+        text = (f"{pe('🎰')} <b>GUGUBET | گوگوبت</b>\n\n"
                 f"{pe('🪙')} موجودی: <b>{format_mio(bal)}</b> میو\n\n"
                 f"{pe('🎮')} بازی‌ها داخل گروه انجام می‌شن؛ توی گروه بنویس:\n"
-                "«میو بت پنل بازی ها»\n\n👇 از دکمه‌ها استفاده کن")
+                "«گوگو بت پنل بازی ها»\n\n👇 از دکمه‌ها استفاده کن")
         return text, main_keyboard(uid)
 
     if kind == "bank":
         bal = await get_balance(uid)
         st = await pool.fetchrow("SELECT games_count, wins_count FROM users WHERE user_id=$1", uid)
         pending = await pool.fetchval("SELECT COUNT(*) FROM transactions WHERE user_id=$1 AND status='pending'", uid)
-        text = (f"{pe('🏦')} <b>بانک MEOWBET</b>\n━━━━━━━━━━━━━━\n"
+        text = (f"{pe('🏦')} <b>بانک GUGUBET</b>\n━━━━━━━━━━━━━━\n"
                 f"{pe('👤')} {uname(u)}\n"
                 f"{pe('🪙')} موجودی: <b>{format_mio(bal)}</b> میو\n"
                 f"{pe('🎮')} بازی‌ها: {st['games_count'] if st else 0}  |  {pe('🏆')} برد: {st['wins_count'] if st else 0}")
@@ -3487,7 +3489,7 @@ async def build_view(kind: str, u, private: bool, back: Optional[str] = None):
     if kind == "games":
         if private:
             text = (f"{pe('🎮')} <b>پنل بازی‌ها</b>\n\nبازی‌ها داخل گروه انجام می‌شن.\n"
-                    "ربات رو به گروهت اضافه کن و اونجا بنویس:\n«میو بت پنل بازی ها»")
+                    "ربات رو به گروهت اضافه کن و اونجا بنویس:\n«گوگو بت پنل بازی ها»")
             rows = []
             if BOT_USERNAME:
                 rows.append([gbtn("➕", "افزودن ربات به گروه", url=f"{bot_link()}?startgroup=true")])
@@ -3539,7 +3541,7 @@ async def build_view(kind: str, u, private: bool, back: Optional[str] = None):
 
 
 def view_cmd(kind: str):
-    """Text-trigger handler (e.g. «بانک», «میو بت پنل بازی ها») -> sends the glass panel."""
+    """Text-trigger handler (e.g. «بانک», «گوگو بت پنل بازی ها») -> sends the glass panel."""
     async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         u, m = update.effective_user, update.effective_message
         if not u or not m:
@@ -3789,7 +3791,7 @@ async def ui_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     u = q.from_user
     uid = u.id
     if owner != str(uid):
-        await q.answer("این پنل مال تو نیست 🙂 خودت بنویس «بانک» یا «میو بت پنل بازی ها»", show_alert=True)
+        await q.answer("این پنل مال تو نیست 🙂 خودت بنویس «بانک» یا «گوگو بت پنل بازی ها»", show_alert=True)
         return
     await ensure_user(u)
     private = q.message.chat.type == ChatType.PRIVATE
@@ -3806,7 +3808,7 @@ async def ui_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
         context.user_data.clear()
         await q.answer()
-        await safe_edit(q, "🛠 <b>پنل مدیریت میوبت</b>", parse_mode="HTML", reply_markup=admin_menu())
+        await safe_edit(q, "🛠 <b>پنل مدیریت گوگوبت</b>", parse_mode="HTML", reply_markup=admin_menu())
         return
 
     if act in ("dep", "wd", "gift"):
@@ -3857,7 +3859,7 @@ async def ui_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await q.answer()
 
 
-# ---------------- MEOWBET Casino: wagered games using the existing Meow wallet ----------------
+# ---------------- GUGUBET Casino: wagered games using the existing Meow wallet ----------------
 ARCADE_DDL = """
 CREATE TABLE IF NOT EXISTS meow_arcade_stats(
     user_id BIGINT PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE,
@@ -3985,11 +3987,11 @@ MAX_ROUNDS = 5
 ROUND_EXTRA = 30  # extra seconds per additional throw
 
 
-ARCADE_TITLE = "「 🎰 میوبت 」"
+ARCADE_TITLE = "「 🎰 گوگوبت 」"
 
 
 def arcade_panel_content(uid: int):
-    text = f"{ARCADE_TITLE}\n\n🎮 میوبت — بازی رو انتخاب کن ⏬"
+    text = f"{ARCADE_TITLE}\n\n🎮 گوگوبت — بازی رو انتخاب کن ⏬"
     rows = [
         [gbtn("👤", "تک نفره", f"arc:single:{uid}", style="primary"), gbtn("👥", "چند نفره", f"arc:multi:{uid}", style="primary")],
         [gbtn("❌", "بستن", f"arc:close:{uid}", style="danger")],
@@ -4003,7 +4005,7 @@ def arcade_single_content(uid: int):
         [gbtn("🎳", "بولینگ", f"arc:solo:{uid}:bowling", style="success"), gbtn("🎲", "تاس", f"arc:solo:{uid}:dice", style="success")],
         [gbtn("🎯", "دارت", f"arc:solo:{uid}:dart", style="success"), gbtn("💩", "پوپ", f"arc:poop:{uid}", style="success")],
         [gbtn("🏀", "بسکتبال", f"arc:solo:{uid}:basket", style="success"), gbtn("⚽", "فوتبال", f"arc:solo:{uid}:football", style="success")],
-        [gbtn("🧨", "دینامیت", f"arc:dsolo:{uid}", style="success")],
+        [gbtn("🧨", "دینامیت", f"arc:dsolo:{uid}", style="success"), gbtn("🪙", "شیر یا خط", f"arc:csolo:{uid}", style="success")],
         [gbtn("🔙", "برگشت", f"arc:menu:{uid}", style="danger")],
     ]
     return text, InlineKeyboardMarkup(rows)
@@ -4016,6 +4018,7 @@ def arcade_multi_content(uid: int):
         [gbtn("🎯", "دارت", f"arc:duelgame:{uid}:dart", style="success")],
         [gbtn("🏀", "بسکتبال", f"arc:duelgame:{uid}:basket", style="success"), gbtn("⚽", "فوتبال", f"arc:duelgame:{uid}:football", style="success")],
         [gbtn("🧨", "دینامیت", f"arc:dyn:{uid}", style="success"), gbtn("⭕", "دوز", f"arc:xo:{uid}", style="success")],
+        [gbtn("🪙", "شیر یا خط", f"arc:coin:{uid}", style="success")],
         [gbtn("🔙", "برگشت", f"arc:menu:{uid}", style="danger")],
     ]
     return text, InlineKeyboardMarkup(rows)
@@ -4043,6 +4046,7 @@ ACTIVE_ANY_SQL = ("SELECT EXISTS(SELECT 1 FROM meow_arcade_requests WHERE user_i
                   "OR EXISTS(SELECT 1 FROM meow_arcade_duels WHERE (creator_id=$1 OR opponent_id=$1) AND status IN ('pending','active')) "
                   "OR EXISTS(SELECT 1 FROM dynamite_duels WHERE (creator_id=$1 OR opponent_id=$1) AND status IN ('pending','active')) "
                   "OR EXISTS(SELECT 1 FROM xo_games WHERE (creator_id=$1 OR opponent_id=$1) AND status IN ('pending','active')) "
+                  "OR EXISTS(SELECT 1 FROM coin_games WHERE (creator_id=$1 OR opponent_id=$1) AND status IN ('pending','active')) "
                   "OR EXISTS(SELECT 1 FROM dyn_solo WHERE user_id=$1)")
 
 
@@ -4092,7 +4096,7 @@ def duel_time_limit(rounds: int) -> int:
 
 def duel_invite_kb(uid: int, game: str, mid: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([
-        [gbtn("🤝", "پیوستن و پرداخت شرط", f"arc:join:{uid}:{game}:{mid}", style="success")],
+        [gbtn("🤝", "پیوستن", f"arc:join:{uid}:{game}:{mid}", style="success")],
         [gbtn("🔙", "برگشت", f"arc:cancelinvite:{uid}:{mid}")]])
 
 
@@ -4247,10 +4251,11 @@ async def arcade_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         raise ApplicationHandlerStop
     game, mode, choice = pending["game"], pending["mode"], pending.get("choice")
     mid, bot = pending.get("mid"), context.bot   # mid = the panel message that asked for the amount: it is edited, not re-sent
-    if mode in ("dyn", "xo", "dsolo"):
+    if mode in ("dyn", "xo", "dsolo", "coin", "csolo"):
         await ensure_user(user)
         context.user_data.pop("arcade_amount", None)
-        err = await {"dyn": dyn_open_table, "xo": xo_open_table, "dsolo": dsolo_open}[mode](user, chat.id, amount, msg=msg, mid=mid)
+        err = await {"dyn": dyn_open_table, "xo": xo_open_table, "dsolo": dsolo_open,
+                     "coin": coin_open_duo, "csolo": coin_open_solo}[mode](user, chat.id, amount, msg=msg, mid=mid)
         if err:
             await msg.reply_text(err)
         raise ApplicationHandlerStop
@@ -4454,6 +4459,15 @@ async def arcade_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         await safe_edit(q, f"{ARCADE_TITLE}\n\n⭕ دوز دو نفره\n🪙 مبلغ شرط هر نفر رو وارد کن، مثلاً: 50کی یا 2میل\n"
                            f"حداقل {format_mio(MIN_GAME)} و حداکثر {format_mio(MAX_GAME)} میو.",
                         parse_mode="HTML", reply_markup=InlineKeyboardMarkup([[gbtn("🔙", "برگشت", f"arc:multi:{uid}")]]))
+        return
+    if action in ("coin", "csolo"):
+        await q.answer()
+        context.user_data["arcade_amount"] = {"game": action, "mode": action, "choice": None,
+                                              "chat_id": q.message.chat_id, "started": utc_ts(), "mid": q.message.message_id}
+        solo = action == "csolo"
+        await safe_edit(q, f"{ARCADE_TITLE}\n\n🪙 شیر یا خط {'تک نفره' if solo else 'دو نفره'}\n🪙 مبلغ ورودی{'' if solo else ' هر نفر'} رو وارد کن، مثلاً: 50کی یا 2میل\n"
+                           f"حداقل {format_mio(MIN_GAME)} و حداکثر {format_mio(MAX_GAME)} میو.",
+                        parse_mode="HTML", reply_markup=InlineKeyboardMarkup([[gbtn("🔙", "برگشت", f"arc:{'single' if solo else 'multi'}:{uid}")]]))
         return
     if action == "poop":
         await q.answer()
@@ -4663,7 +4677,7 @@ DYN_BOMB_ID = "5929177175029718803"      # 🧨 bomb cell
 DYN_DIAMOND_ID = "5940725397195853882"   # 💎 opened safe cell
 BLANK = "\u2800"
 _AMT_ONLY = r"^\s*[0-9۰-۹٠-٩][0-9۰-۹٠-٩,٬،.]*\s*(?:k|K|m|M|mil|million|ک|کی|کا|هزار|میل|میلیون|مگ)?\s*$"
-_DYN_RE = r"^\s*(?:میو\s?بت\s+)?دینامیت(?:\s+دوئل)?\s*$"
+_DYN_RE = r"^\s*(?:(?:گوگو|میو)\s?بت\s+)?دینامیت(?:\s+دوئل)?\s*$"
 
 
 def cbtn(text: str, data: str, icon: Optional[str] = None, style: Optional[str] = None) -> InlineKeyboardButton:
@@ -4688,11 +4702,11 @@ def dyn_pending_text(amount: int, name: str) -> str:
             f"{pe('👤')} سازنده: {esc(name)}\n"
             f"{pe('💰')} شرط هر نفر: <b>{format_mio(amount)}</b> میو\n"
             f"{pe('🏆')} جایزه برنده: <b>{format_mio(pot_net(amount))}</b> میو\n\n"
-            "برای شروع، یک بازیکن دیگر با پرداخت شرط به میز بپیوندد.")
+            "برای شروع، یک بازیکن دیگر روی «پیوستن» بزند.")
 
 
 def dyn_pending_kb() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup([[cbtn("پیوستن و پرداخت شرط", "dynj", _PE.get("✅"), "success"),
+    return InlineKeyboardMarkup([[cbtn("پیوستن", "dynj", _PE.get("✅"), "success"),
                                   cbtn("برگشت", "dync", None, "danger")]])
 
 
@@ -4773,7 +4787,7 @@ async def dyn_open_table(u, chat_id: int, amount: int = 0, q=None, msg=None, mid
 
 
 async def dyn_text_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """«میو بت دینامیت» in a group: ask for the stake; the prompt then turns into the table.
+    """«گوگو بت دینامیت» in a group: ask for the stake; the prompt then turns into the table.
     (This trigger used to be written but never registered, and it tried to open a 0-stake table that is always refused.)"""
     u, m = update.effective_user, update.effective_message
     if not u or not m:
@@ -4975,7 +4989,7 @@ XO_ICON = {"X": "5857415006022278161", "O": "5857031396723269245"}   # custom em
 def xo_pe(ch: str) -> str:
     """The X / O mark as a premium emoji inside HTML text."""
     return f'<tg-emoji emoji-id="{XO_ICON[ch]}">{XO_MARK[ch]}</tg-emoji>'
-_XO_RE = r"^\s*(?:میو\s?بت\s+)?دوز(?:\s+دوئل)?\s*$"
+_XO_RE = r"^\s*(?:(?:گوگو|میو)\s?بت\s+)?دوز(?:\s+دوئل)?\s*$"
 
 XO_DDL = """
 CREATE TABLE IF NOT EXISTS xo_games(
@@ -5003,6 +5017,7 @@ async def init_xo() -> None:
     async with pool.acquire() as c:
         await c.execute(XO_DDL)
         await c.execute(DSOLO_DDL)
+        await c.execute(COIN_DDL)
 
 
 def xo_winning_line(board: str):
@@ -5022,11 +5037,11 @@ def xo_pending_text(amount: int, name: str) -> str:
             f"{pe('👤')} سازنده: {esc(name)} ({xo_pe('X')})\n"
             f"{pe('💰')} شرط هر نفر: <b>{format_mio(amount)}</b> میو\n"
             f"{pe('🏆')} جایزه برنده: <b>{format_mio(pot_net(amount))}</b> میو\n\n"
-            "برای شروع، یک بازیکن دیگر با پرداخت شرط به میز بپیوندد.")
+            "برای شروع، یک بازیکن دیگر روی «پیوستن» بزند.")
 
 
 def xo_pending_kb() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup([[cbtn("پیوستن و پرداخت شرط", "xoj", _PE.get("✅"), "success"),
+    return InlineKeyboardMarkup([[cbtn("پیوستن", "xoj", _PE.get("✅"), "success"),
                                   cbtn("برگشت", "xoc", None, "danger")]])
 
 
@@ -5101,7 +5116,7 @@ async def xo_open_table(u, chat_id: int, amount: int = 0, q=None, msg=None, mid=
 
 
 async def xo_text_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """«میو بت دوز» in a group: ask for the stake; the prompt then turns into the table."""
+    """«گوگو بت دوز» in a group: ask for the stake; the prompt then turns into the table."""
     u, m = update.effective_user, update.effective_message
     if not u or not m:
         return
@@ -5474,6 +5489,295 @@ async def expire_dsolo(bot) -> None:
 
 
 # ---------------- premium emoji helpers (admin only) ----------------
+# ---------------- Coin flip / شیر یا خط (solo + 2 players, wagered) ----------------
+COIN_JOIN_TIMEOUT = 60      # 2-player table: seconds for somebody to press «پیوستن»
+COIN_PICK_TIMEOUT = 120     # seconds to choose شیر or خط; no choice = the stake is lost
+COIN_SIDE = {"h": "شیر", "t": "خط"}
+_COIN_RE = r"^\s*(?:(?:گوگو|میو)\s?بت\s+)?شیر\s*(?:یا|و)\s*خط\s*$"
+_coin_rng = random.SystemRandom()
+
+COIN_DDL = """
+CREATE TABLE IF NOT EXISTS coin_games(
+    chat_id BIGINT NOT NULL,
+    message_id BIGINT NOT NULL,
+    creator_id BIGINT NOT NULL,
+    creator_name TEXT NOT NULL DEFAULT '',
+    opponent_id BIGINT,
+    opponent_name TEXT,
+    solo BOOLEAN NOT NULL DEFAULT FALSE,
+    amount BIGINT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending',
+    deadline DOUBLE PRECISION,
+    created_at DOUBLE PRECISION NOT NULL,
+    PRIMARY KEY (chat_id, message_id)
+);
+CREATE INDEX IF NOT EXISTS coin_games_creator_idx ON coin_games(creator_id) WHERE status IN ('pending','active');
+CREATE INDEX IF NOT EXISTS coin_games_opponent_idx ON coin_games(opponent_id) WHERE status IN ('pending','active');
+CREATE INDEX IF NOT EXISTS coin_games_status_idx ON coin_games(status, created_at) WHERE status IN ('pending','active');
+"""
+
+
+def coin_title() -> str:
+    return f"{pe('🪙')} شیر یا خط"
+
+
+def coin_pending_kb() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup([[cbtn("پیوستن", "coinj", _PE.get("✅"), "success"),
+                                  cbtn("برگشت", "coinc", None, "danger")]])
+
+
+def coin_pick_kb() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup([[cbtn("شیر", "coinp:h", None, "primary"),
+                                  cbtn("خط", "coinp:t", None, "primary")]])
+
+
+def coin_pending_text(amount: int, name: str) -> str:
+    return (f"{coin_title()}\n\n"
+            f"{pe('👤')} سازنده: {esc(name)}\n"
+            f"{pe('💰')} مبلغ ورودی هر نفر: <b>{format_mio(amount)}</b> میو\n"
+            f"{pe('🏆')} جایزه برنده: <b>{format_mio(pot_net(amount))}</b> میو\n\n"
+            "برای شروع، یک بازیکن دیگر روی «پیوستن» بزند.")
+
+
+def coin_active_text(r) -> str:
+    amount = int(r["amount"] or 0)
+    if r["solo"]:
+        return (f"{coin_title()}\n\n"
+                f"{pe('👤')} بازیکن: {esc(r['creator_name'])}\n"
+                f"{pe('💰')} مبلغ ورودی: <b>{format_mio(amount)}</b> میو\n"
+                f"{pe('🏆')} جایزه حدس درست (2x): <b>{format_mio(pot_net(amount))}</b> میو\n"
+                f"🎯 شانس حدس درست: <b>۵۰ درصد</b>\n\n"
+                f"{pe('❗')} شیر یا خط، انتخاب کن.\n"
+                f"{pe('⏳')} فقط {COIN_PICK_TIMEOUT} ثانیه فرصت داری...")
+    return (f"{coin_title()}\n\n"
+            f"{pe('👤')} سازنده: {esc(r['creator_name'])}\n"
+            f"{pe('👥')} بازیکن دوم: {esc(r['opponent_name'])}\n"
+            f"{pe('💰')} مبلغ ورودی هر نفر: <b>{format_mio(amount)}</b> میو | {pe('🏆')} جایزه: <b>{format_mio(pot_net(amount))}</b> میو\n\n"
+            f"{pe('❗')} {esc(r['creator_name'])}، شیر یا خط رو انتخاب کن؛ طرف مقابل سمت دیگه سکه رو می‌گیره.\n"
+            f"{pe('⏳')} فقط {COIN_PICK_TIMEOUT} ثانیه فرصت داری...")
+
+
+def coin_result_text(r, flip: str, pick: Optional[str], winner: Optional[str], loser: Optional[str],
+                     prize: int, fee: int) -> str:
+    amount = int(r["amount"] or 0)
+    lines = [f"{coin_title()} {pe('🏁')}", ""]
+    if pick is None:
+        lines.append(f"{pe('⏰')} زمان تموم شد")
+        lines.append(f"{pe('⚠️')} سکه انداخته شد؛ شیر یا خط انتخاب نکردید و باختید.{pe('❌')}")
+    else:
+        lines.append(f"{pe('🪙')} سکه افتاد روی: <b>{COIN_SIDE[flip]}</b>")
+        lines.append(f"{pe('🎯')} انتخاب {esc(r['creator_name'])}: <b>{COIN_SIDE[pick]}</b>")
+    lines.append("")
+    if r["solo"]:
+        if winner:
+            lines.append(f"{pe('🏆')} درست حدس زدی!\n💰 جایزه: <b>{format_mio(prize)}</b> میو" + (f"\n{fee_line(fee)}".rstrip() if fee else ""))
+        else:
+            lines.append(f"{pe('❌')} باختی؛ مبلغ ورودی ({format_mio(amount)} میو) از دست رفت.")
+    else:
+        lines.append(f"{pe('🏆')} برنده: {esc(winner)}\n{pe('🥈')} بازیکن دیگر: {esc(loser)}\n"
+                     f"💰 جایزه برنده: <b>{format_mio(prize)}</b> میو" + (f"\n{fee_line(fee)}".rstrip() if fee else ""))
+    return "\n".join(lines)
+
+
+async def coin_open(u, chat_id: int, amount: int, solo: bool, q=None, msg=None, mid=None) -> Optional[str]:
+    """Create a coin-flip table. The creator's stake is escrowed together with the table row.
+    solo: the game starts at once (the player picks شیر/خط). Otherwise the table waits for «پیوستن»."""
+    if amount <= 0:
+        return "❌ مبلغ ورودی نامعتبره."
+    name = raw_name(u)
+    bot = (q or msg).get_bot()
+    now = utc_ts()
+    fake = {"solo": solo, "amount": amount, "creator_name": name, "opponent_name": None}
+    try:
+        if solo:
+            sent_mid = await show_in_place(bot, msg, chat_id, coin_active_text(fake), coin_pick_kb(), mid, q)
+        else:
+            sent_mid = await show_in_place(bot, msg, chat_id, coin_pending_text(amount, name), coin_pending_kb(), mid, q)
+    except Exception:
+        logger.exception("coin table message failed; user=%s", u.id)
+        return "❌ ساخت میز ناموفق بود؛ دوباره تلاش کن."
+    err = None
+    try:
+        async with pool.acquire() as c, c.transaction():
+            await c.fetchrow("SELECT user_id FROM users WHERE user_id=$1 FOR UPDATE", u.id)
+            if await c.fetchval(ACTIVE_ANY_SQL, u.id):
+                raise ActiveGame()
+            await adjust(c, u.id, -amount, "coin_stake", f"coin:{chat_id}:{sent_mid}")
+            await c.execute(
+                "INSERT INTO coin_games(chat_id,message_id,creator_id,creator_name,solo,amount,status,deadline,created_at) "
+                "VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)",
+                chat_id, sent_mid, u.id, name, solo, amount, "active" if solo else "pending",
+                now + COIN_PICK_TIMEOUT if solo else None, now)
+    except InsufficientFunds:
+        err = f"❌ موجودی کافی نیست. موجودی: {format_mio(await get_balance(u.id))} میو"
+    except ActiveGame:
+        err = "⚠️ یک بازی فعال داری؛ اول همون رو تموم کن."
+    except Exception:
+        logger.exception("coin table creation failed; user=%s", u.id)
+        err = "❌ ساخت میز ناموفق بود؛ مبلغی از حسابت کسر نشده."
+    if err:
+        await edit_text_safe(bot, chat_id, sent_mid, err)
+    return None
+
+
+async def coin_open_solo(u, chat_id: int, amount: int = 0, q=None, msg=None, mid=None) -> Optional[str]:
+    return await coin_open(u, chat_id, amount, True, q=q, msg=msg, mid=mid)
+
+
+async def coin_open_duo(u, chat_id: int, amount: int = 0, q=None, msg=None, mid=None) -> Optional[str]:
+    return await coin_open(u, chat_id, amount, False, q=q, msg=msg, mid=mid)
+
+
+async def coin_text_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """«گوگو بت شیر یا خط» in a group: ask for the stake; the prompt then turns into a 2-player table."""
+    u, m = update.effective_user, update.effective_message
+    if not u or not m:
+        return
+    if not is_group(update):
+        await m.reply_text("🪙 شیر یا خط داخل گروه انجام می‌شه؛ ربات رو به گروه اضافه کن.")
+        return
+    await remember_group(update)
+    if not await require_join(update, context):
+        return
+    await ensure_user(u)
+    sent = await m.reply_text(
+        f"{ARCADE_TITLE}\n\n🪙 شیر یا خط دو نفره\n🪙 مبلغ ورودی هر نفر رو بفرست، مثلاً: 50کی یا 2میل\n"
+        f"حداقل {format_mio(MIN_GAME)} و حداکثر {format_mio(MAX_GAME)} میو.", parse_mode="HTML")
+    context.user_data["arcade_amount"] = {"game": "coin", "mode": "coin", "choice": None, "chat_id": update.effective_chat.id,
+                                          "started": utc_ts(), "mid": sent.message_id}
+
+
+async def coin_settle(c, r, pick: Optional[str]):
+    """Flip the coin and pay out (inside the caller's transaction).
+    pick=None means the creator did not choose in time: the coin is still thrown, the creator loses and
+    the stake is NOT returned. Returns (flip, winner_name, loser_name, prize, fee); solo -> winner_name is
+    the player's name on a win, None on a loss."""
+    amount = int(r["amount"] or 0)
+    ref = f"coin:{r['chat_id']}:{r['message_id']}"
+    flip = _coin_rng.choice(("h", "t"))
+    await c.execute("DELETE FROM coin_games WHERE chat_id=$1 AND message_id=$2", r["chat_id"], r["message_id"])
+    creator_wins = pick is not None and flip == pick
+    if r["solo"]:
+        if creator_wins:
+            prize, fee = apply_fee(amount, amount * 2)
+            await adjust(c, int(r["creator_id"]), prize, "coin_win", ref)
+            await log_game(c, int(r["creator_id"]), "coin", amount, "win", prize, fee)
+            return flip, r["creator_name"], None, prize, fee
+        await log_game(c, int(r["creator_id"]), "coin", amount, "loss", 0, 0)
+        return flip, None, r["creator_name"], 0, 0
+    win_id = int(r["creator_id"]) if creator_wins else int(r["opponent_id"])
+    lose_id = int(r["opponent_id"]) if creator_wins else int(r["creator_id"])
+    wn, ln = ((r["creator_name"], r["opponent_name"]) if creator_wins else (r["opponent_name"], r["creator_name"]))
+    prize, fee = apply_fee(amount, amount * 2)
+    await adjust(c, win_id, prize, "coin_win", ref)
+    await log_game(c, win_id, "coin", amount, "win", prize, fee)
+    await log_game(c, lose_id, "coin", amount, "loss", 0, 0)
+    return flip, wn, ln, prize, fee
+
+
+async def coin_router(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    q = update.callback_query
+    if not q or not q.message:
+        return
+    uid, data = q.from_user.id, q.data or ""
+    chat_id, mid = q.message.chat_id, q.message.message_id
+    if data == "coinn":
+        await q.answer()
+        return
+    if data == "coinj":
+        if not await require_join(update, context):
+            return
+        await ensure_user(q.from_user)
+    elif data != "coinc" and not data.startswith("coinp:"):
+        await q.answer()
+        return
+
+    alert, out = None, None
+    async with pool.acquire() as c, c.transaction():
+        r = await c.fetchrow("SELECT * FROM coin_games WHERE chat_id=$1 AND message_id=$2 FOR UPDATE", chat_id, mid)
+        if not r:
+            alert = "این بازی دیگه فعال نیست."
+        elif data == "coinc":
+            if r["status"] != "pending":
+                alert = "بازی شروع شده و قابل لغو نیست."
+            elif uid != r["creator_id"]:
+                alert = "فقط سازنده می‌تونه لغو کنه."
+            else:
+                await c.execute("DELETE FROM coin_games WHERE chat_id=$1 AND message_id=$2", chat_id, mid)
+                await adjust(c, int(r["creator_id"]), int(r["amount"]), "coin_refund", f"coin:{chat_id}:{mid}:cancel")
+                out = ("cancel",)
+        elif data == "coinj":
+            if r["status"] != "pending" or r["solo"]:
+                alert = "این بازی دیگه فعال نیست."
+            elif uid == r["creator_id"]:
+                alert = "سازنده نمی‌تونه به بازی خودش بپیونده."
+            else:
+                alert = await _charge_joiner(c, uid, r, "coin_stake", "coin")
+                if alert is None:
+                    await c.execute(
+                        "UPDATE coin_games SET status='active', opponent_id=$3, opponent_name=$4, deadline=$5 "
+                        "WHERE chat_id=$1 AND message_id=$2", chat_id, mid, uid, raw_name(q.from_user),
+                        utc_ts() + COIN_PICK_TIMEOUT)
+                    out = ("join", await c.fetchrow("SELECT * FROM coin_games WHERE chat_id=$1 AND message_id=$2", chat_id, mid))
+        else:  # coinp:h / coinp:t
+            pick = data.split(":", 1)[1] if ":" in data else ""
+            if pick not in COIN_SIDE:
+                alert = "انتخاب نامعتبره."
+            elif r["status"] != "active":
+                alert = "بازی هنوز شروع نشده."
+            elif uid != r["creator_id"]:
+                alert = "این بازی مال تو نیست." if r["solo"] else "فقط سازنده میز شیر یا خط رو انتخاب می‌کنه."
+            elif r["deadline"] is not None and r["deadline"] < utc_ts():
+                alert = "زمان انتخاب تموم شد."
+            else:
+                flip, wn, ln, prize, fee = await coin_settle(c, r, pick)
+                out = ("done", r, flip, pick, wn, ln, prize, fee)
+    if alert:
+        await q.answer(alert, show_alert=True)
+        return
+    kind = out[0]
+    if kind == "cancel":
+        await q.answer("لغو شد")
+        await safe_edit(q, f"{pe('🪙')} میز شیر یا خط لغو شد و مبلغ برگشت.", parse_mode="HTML", reply_markup=None)
+    elif kind == "join":
+        await q.answer()
+        await safe_edit(q, coin_active_text(out[1]), parse_mode="HTML", reply_markup=coin_pick_kb())
+    else:
+        _, r, flip, pick, wn, ln, prize, fee = out
+        await q.answer("🪙 سکه انداخته شد!")
+        await safe_edit(q, coin_result_text(r, flip, pick, wn, ln, prize, fee), parse_mode="HTML", reply_markup=None)
+
+
+async def expire_coin(bot) -> None:
+    """DB-driven timeouts (restart-safe). Unjoined 2-player tables are closed and refunded.
+    A player who does not choose شیر/خط in time loses: the coin is thrown, the stake is not returned."""
+    now = utc_ts()
+    for r in await pool.fetch("SELECT chat_id,message_id FROM coin_games WHERE status='pending' AND created_at < $1",
+                              now - COIN_JOIN_TIMEOUT):
+        row = None
+        async with pool.acquire() as c, c.transaction():
+            row = await c.fetchrow(
+                "DELETE FROM coin_games WHERE chat_id=$1 AND message_id=$2 AND status='pending' AND created_at < $3 RETURNING *",
+                r["chat_id"], r["message_id"], now - COIN_JOIN_TIMEOUT)
+            if row and int(row["amount"] or 0) > 0:
+                await adjust(c, int(row["creator_id"]), int(row["amount"]), "coin_refund",
+                             f"coin:{row['chat_id']}:{row['message_id']}:timeout")
+        if row:
+            await edit_text_safe(bot, row["chat_id"], row["message_id"], f"{pe('⏰')} زمان پیوستن تمام شد؛ میز شیر یا خط بسته شد.")
+    for r in await pool.fetch("SELECT chat_id,message_id FROM coin_games WHERE status='active' AND deadline < $1", now):
+        out = None
+        async with pool.acquire() as c, c.transaction():
+            row = await c.fetchrow("SELECT * FROM coin_games WHERE chat_id=$1 AND message_id=$2 FOR UPDATE",
+                                   r["chat_id"], r["message_id"])
+            if row and row["status"] == "active" and row["deadline"] is not None and row["deadline"] < now:
+                flip, wn, ln, prize, fee = await coin_settle(c, row, None)
+                out = (row, flip, wn, ln, prize, fee)
+        if out:
+            row, flip, wn, ln, prize, fee = out
+            await edit_text_safe(bot, row["chat_id"], row["message_id"], coin_result_text(row, flip, None, wn, ln, prize, fee))
+
+
+
 async def emoji_id_helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Admin sends a message containing premium emoji in private -> bot replies with their ids."""
     u, m = update.effective_user, update.effective_message
@@ -5547,11 +5851,14 @@ def build_application() -> Application:
     menu(r"^(🎁 ?لینک هدیه|لینک هدیه 🎁)$", gift_start)
     menu(r"^👥 دعوت دوستان$", view_cmd("ref"))
     # glass panels: typed triggers (work in groups and in private)
-    menu(r"^\s*میو\s?بت(?:\s+پنل\s+بازی[\u200c\s]*ها)?\s*$", view_cmd("games"))
+    menu(r"^\s*(?:گوگو|میو)\s?بت(?:\s+پنل\s+بازی[\u200c\s]*ها)?\s*$", view_cmd("games"))
     menu(r"^\s*پنل\s+بازی[\u200c\s]*ها\s*$", view_cmd("games"))
+    menu(r"^\s*(?:🎰\s*)?کازینو\s*$", view_cmd("games"))
+    menu(r"^\s*بازی[\u200c\s]*(?:ها[ی]?\s*)?(?:میویی|گوگویی|میو|گوگو)\s*$", view_cmd("games"))
     menu(r"^\s*(?:🏦\s*)?(?:بانک|موجودی|💰 موجودی)\s*$", view_cmd("bank"))
     menu(_DYN_RE, dyn_text_cmd)
     menu(_XO_RE, xo_text_cmd)
+    menu(_COIN_RE, coin_text_cmd)
     # legacy text-keyboard buttons (old clients that still show the old keyboard)
     menu(r"^🎮 بازی‌ها$", view_cmd("games"))
     menu(r"^🎁 جایزه روزانه$", view_cmd("daily"))
@@ -5578,6 +5885,7 @@ def build_application() -> Application:
     app.add_handler(CallbackQueryHandler(dyn_router, pattern=r"^dyn[jcxn]"))
     app.add_handler(CallbackQueryHandler(xo_router, pattern=r"^xo[jcmn]"))
     app.add_handler(CallbackQueryHandler(dsolo_router, pattern=r"^ds[xwn]"))
+    app.add_handler(CallbackQueryHandler(coin_router, pattern=r"^coin[jcpn]"))
     app.add_handler(CallbackQueryHandler(ui_callback, pattern=r"^ui:"))
 
     app.add_error_handler(on_error)
@@ -5585,7 +5893,7 @@ def build_application() -> Application:
 
 
 async def health(request: web.Request) -> web.Response:
-    return web.Response(text="MEOWBET is running")
+    return web.Response(text="GUGUBET is running")
 
 
 async def keepalive_loop() -> None:
@@ -5644,7 +5952,7 @@ async def amain() -> None:
 
     tasks = [asyncio.create_task(c) for c in (
         janitor_loop(app.bot), quiz_loop(app.bot), notice_loop(app.bot), keepalive_loop(), bank_catchup_loop())]
-    logger.info("MEOWBET v7 started")
+    logger.info("GUGUBET v7 started")
 
     await stop.wait()
     logger.info("shutting down...")
